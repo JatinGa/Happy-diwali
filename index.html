@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Diwali!</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            z-index: 1;
+        }
+        h1 {
+            font-size: 4em;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FF6347, 0 0 20px #FF6347, 0 0 30px #FF6347;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #FF6347, 0 0 20px #FF6347, 0 0 30px #FF6347;
+            }
+            to {
+                text-shadow: 0 0 20px #FF6347, 0 0 30px #FF6347, 0 0 40px #FF6347;
+            }
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireworks"></canvas>
+    <div class="container">
+        <h1>Happy Diwali!</h1>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Firework {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.sx = Math.random() * 3 - 1.5;
+                this.sy = -Math.random() * 4 - 4;
+                this.size = Math.random() * 2 + 1;
+                this.hue = Math.floor(Math.random() * 360);
+                this.brightness = Math.floor(Math.random() * 50 + 50);
+            }
+
+            update() {
+                this.x += this.sx;
+                this.y += this.sy;
+                this.sy += 0.05;
+                this.size -= 0.02;
+                if (this.size < 0) this.reset();
+            }
+
+            draw() {
+                ctx.fillStyle = hsl(${this.hue}, 100%, ${this.brightness}%);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const fireworks = Array(50).fill().map(() => new Firework());
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            fireworks.forEach(fw => {
+                fw.update();
+                fw.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
